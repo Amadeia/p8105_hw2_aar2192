@@ -44,6 +44,13 @@ nyc_transit %>%
 
 There are 356 unique station names.
 
+#### How many stations are ADA compliant?
+```{r ada_compliant_stations}
+summary(nyc_transit$ada==TRUE)
+```
+There are 468 ADA compliant stations.
+
+
 
 
 
