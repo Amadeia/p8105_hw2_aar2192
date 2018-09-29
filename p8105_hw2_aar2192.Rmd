@@ -50,7 +50,7 @@ summary(nyc_transit$ada==TRUE)
 ```
 There are 468 ADA compliant stations.
 
-
+#### What proportion of station entrances/exits without vending allow entrance?
 
 
 
