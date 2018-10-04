@@ -95,8 +95,8 @@ There are 16 stations that serve the A that are ADA compliant.
 
 ```{r read_clean_Mr_Trash}
 mr_trash_dataset =
-  readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-3.xlsx",
-                     sheet = "Mr. Trash Wheel", range = "A2:N213") %>% 
+  readxl::read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx",
+                     sheet = "Mr. Trash Wheel", range = "A2:N338") %>% 
   janitor::clean_names() %>% 
   filter(!is.na(dumpster)) %>% 
   mutate(sports_balls = as.integer(sports_balls))
@@ -107,7 +107,7 @@ mr_trash_dataset =
 #### Cleaning steps for 2016 precipitation data
 ```{r precipitation_2016}
 precipitation_2016 =
-  readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-3.xlsx",
+  readxl::read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx",
                      sheet = "2016 Precipitation", range = "A2:B15") %>% 
   janitor::clean_names() %>% 
   na.omit() %>% 
@@ -118,7 +118,7 @@ precipitation_2016 =
 #### Cleaning steps for 2017 precipitation data
 ```{r precipitation_2017}
 precipitation_2017 =
-  readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-3.xlsx",
+  readxl::read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx",
                      sheet = "2017 Precipitation",range = "A2:B15") %>% 
   janitor::clean_names() %>% 
   na.omit() %>% 
@@ -137,9 +137,9 @@ precipitation_2016_2017 = bind_rows(precipitation_2016, precipitation_2017) %>%
 ```{r summary_mr_trashwheel}
 str(mr_trash_dataset)
 ```
-There are 174 observations, or rows, and 14 variables in the Mr. Trash Wheel dataset. The variables and their correspondent type are as follows: **dumpster**, numeric; **month**, character; **year**, numeric; **date**, converted date format; **weight_tons**, numeric; **volume_cubic_yards**, numeric; **plastic_bottles**, numeric; **polystyrene**, numeric; **cigarette_butts**, numeric; **glass_bottles**, numeric; **grocery_bags**, numeric;**chips_bags**, numeric; **sports_balls**, integer; **homes_powered**, numeric.
+There are 285 observations, or rows, and 14 variables in the Mr. Trash Wheel dataset. The variables and their correspondent type are as follows: **dumpster**, numeric; **month**, character; **year**, numeric; **date**, converted date format; **weight_tons**, numeric; **volume_cubic_yards**, numeric; **plastic_bottles**, numeric; **polystyrene**, numeric; **cigarette_butts**, numeric; **glass_bottles**, numeric; **grocery_bags**, numeric;**chips_bags**, numeric; **sports_balls**, integer; **homes_powered**, numeric.
 
-The Mr. Trash Wheel data includes information from 2014 to 2017. The dumpster number corresponds to the month and year, such that a later month and year has a bigger corresponding dumpster number. Certain months have more dumpsters (more observations or rows per month), which may indicate that more trash is collected. The maximum amount of trash in tons is `r max(mr_trash_dataset$weight_tons)` and the minimum is `r min(mr_trash_dataset$weight_tons)`. The variable **homes_powered** should be positively correlated with the trash in tons, as the trash becomes incinerated and generates power. Thus the more tons, the more power.This data should relate to the joined precipitation dataset, as amount of precipitation is correlated the amount of trash collected (i.e. more rain means more trash collection). Included in the Mr. Trash Wheel dataset are the types of trash collected by Mr. Trash Wheel (the variables on the right hand side); these types are also correlated to amount of precipitation.
+The Mr. Trash Wheel data includes information from 2014 to 2018. The dumpster number corresponds to the month and year, such that a later month and year has a bigger corresponding dumpster number. Certain months have more dumpsters (more observations or rows per month), which may indicate that more trash is collected. The maximum amount of trash in tons is `r max(mr_trash_dataset$weight_tons)` and the minimum is `r min(mr_trash_dataset$weight_tons)`. The variable **homes_powered** should be positively correlated with the trash in tons, as the trash becomes incinerated and generates power. Thus the more tons, the more power.This data should relate to the joined precipitation dataset, as amount of precipitation is correlated the amount of trash collected (i.e. more rain means more trash collection). Included in the Mr. Trash Wheel dataset are the types of trash collected by Mr. Trash Wheel (the variables on the right hand side); these types are also correlated to amount of precipitation.
 
 Thus the key variables for the mr_trash_dataset are most likely **weight_tons**, **month**, **year** and **homes_powered**; however, it may be interesting to also look at the type of weight collected and it may also depend on whether we want to count how many dumpsters are filled per month.
 
