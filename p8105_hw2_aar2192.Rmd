@@ -1,7 +1,7 @@
 ---
 title: "p8105_hw2_aar2192"
 author: "Amadeia Rector"
-date: "9/28/2018"
+date: "10/05/2018"
 output: github_document
 ---
 
@@ -51,6 +51,79 @@ summary(nyc_transit$ada==TRUE)
 There are 468 ADA compliant stations.
 
 #### What proportion of station entrances/exits without vending allow entrance?
+```{r proportion_of_exits_entrances}
+entry_no_vend_table = table(nyc_transit$entry, nyc_transit$vending)
+prop_entry_no_vend = prop.table(entry_no_vend_table,2)
+prop_entry_no_vend
+```
+The proportion of station entrances/exits without vending that allow entrance is 37.7%.
 
 
+### Reformating the data 
+
+#### Making route number and route name separate variables
+
+```{r tidying_up}
+nyc_transit_tidy=nyc_transit %>% 
+  gather(key =route_number, value =route_name, route1:route11) %>% 
+  separate("route_number", into = c("remove", "route_number"), sep = 5) %>% 
+  select(-"remove") %>% 
+  na.omit()  
+  str(nyc_transit_tidy)
+```
+#### How many distinct stations serve the A train?
+```{r stations_serving_A}
+just_A = nyc_transit_tidy %>% 
+  filter(route_name =="A") 
+
+length(unique(just_A$station_name))
+```
+There are 56 distinct stations that serve the A train.
+
+#### How many ADA complaint stations does the A train serve?
+
+```{r ADA_complaint_A}
+ada_A = just_A %>%
+  filter(ada == TRUE)
+length(unique(ada_A$station_name))
+```
+There are 16 stations that serve the A that are ADA compliant.
+
+# Problem 2
+
+### Read and clean Mr. Trash Wheel sheet
+
+```{r read_clean_Mr_Trash}
+mr_trash_dataset =
+  readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-3.xlsx",
+                     sheet = "Mr. Trash Wheel", range = "A2:N213") %>% 
+  janitor::clean_names() %>% 
+  filter(!is.na(dumpster)) %>% 
+  mutate(sports_balls = as.integer(sports_balls))
+
+```
+### Read and clean precipitation data for 2016 and 2017
+
+```{r precipitation_2016}
+precipitation_2016 =
+  readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-3.xlsx",
+                     sheet = "2016 Precipitation", range = "A2:B15") %>% 
+  janitor::clean_names() %>% 
+  na.omit() %>% 
+  mutate(year=2016) %>% 
+  rename(total_precip = total)
+```
+```{r precipitation_2017}
+precipitation_2017 =
+  readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-3.xlsx",
+                     sheet = "2017 Precipitation",range = "A2:B15") %>% 
+  janitor::clean_names() %>% 
+  na.omit() %>% 
+  mutate(year=2017) %>% 
+  rename(total_precip = total)
+View(precipitation_2017)
+```
+```{r}
+
+```
 
