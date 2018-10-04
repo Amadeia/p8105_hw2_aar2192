@@ -104,26 +104,54 @@ mr_trash_dataset =
 ```
 ### Read and clean precipitation data for 2016 and 2017
 
+#### Cleaning steps for 2016 precipitation data
 ```{r precipitation_2016}
 precipitation_2016 =
   readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-3.xlsx",
                      sheet = "2016 Precipitation", range = "A2:B15") %>% 
   janitor::clean_names() %>% 
   na.omit() %>% 
-  mutate(year=2016) %>% 
+  mutate(year = 2016) %>% 
   rename(total_precip = total)
 ```
+
+#### Cleaning steps for 2017 precipitation data
 ```{r precipitation_2017}
 precipitation_2017 =
   readxl::read_excel("./data/HealthyHarborWaterWheelTotals2017-3.xlsx",
                      sheet = "2017 Precipitation",range = "A2:B15") %>% 
   janitor::clean_names() %>% 
   na.omit() %>% 
-  mutate(year=2017) %>% 
+  mutate(year = 2017) %>% 
   rename(total_precip = total)
-View(precipitation_2017)
-```
-```{r}
-
 ```
 
+#### Binding the two years of precipitation data
+```{r precipitation_2016_2017}
+precipitation_2016_2017 = bind_rows(precipitation_2016, precipitation_2017) %>% 
+  mutate(month = month.name[month])
+```
+
+#### Description of Mr. Trash Wheel and Precipitation datasets
+
+```{r summary_mr_trashwheel}
+str(mr_trash_dataset)
+```
+There are 174 observations, or rows, and 14 variables in the Mr. Trash Wheel dataset. The variables and their correspondent type are as follows: **dumpster**, numeric; **month**, character; **year**, numeric; **date**, converted date format; **weight_tons**, numeric; **volume_cubic_yards**, numeric; **plastic_bottles**, numeric; **polystyrene**, numeric; **cigarette_butts**, numeric; **glass_bottles**, numeric; **grocery_bags**, numeric;**chips_bags**, numeric; **sports_balls**, integer; **homes_powered**, numeric.
+
+The Mr. Trash Wheel data includes information from 2014 to 2017. The dumpster number corresponds to the month and year, such that a later month and year has a bigger corresponding dumpster number. Certain months have more dumpsters (more observations or rows per month), which may indicate that more trash is collected. The maximum amount of trash in tons is `r max(mr_trash_dataset$weight_tons)` and the minimum is `r min(mr_trash_dataset$weight_tons)`. The variable **homes_powered** should be positively correlated with the trash in tons, as the trash becomes incinerated and generates power. Thus the more tons, the more power.This data should relate to the joined precipitation dataset, as amount of precipitation is correlated the amount of trash collected (i.e. more rain means more trash collection). Included in the Mr. Trash Wheel dataset are the types of trash collected by Mr. Trash Wheel (the variables on the right hand side); these types are also correlated to amount of precipitation.
+
+Thus the key variables for the mr_trash_dataset are most likely **weight_tons**, **month**, **year** and **homes_powered**; however, it may be interesting to also look at the type of weight collected and it may also depend on whether we want to count how many dumpsters are filled per month.
+
+As for the the combined water precipitation data set, _precipitation_2016_2017_, there are  `r nrow(precipitation_2016_2017)` observations and `r ncol(precipitation_2016_2017)` variables. The data only includes the data for precipitation in the years 2016-2017. The most important variables here are the **month** **year** and **total_precip**. The data from this dataset can be used in conjunction with the Mr. Trash Wheel data to compare trash amount and precipitation during the time period within 2016-17.
+
+The total precipitation in 2017 was **`r sum(precipitation_2017$total_precip)`**.
+
+The median number of sports balls in a dumpster in 2016 was **`r sports_balls_median = 
+  mr_trash_dataset %>% 
+  filter(year==2016) %>% 
+  mutate(sports_balls = as.numeric(sports_balls)) %>% 
+  select(sports_balls)  
+  median(sports_balls_median$sports_balls)`**.
+  
+# Problem 3
