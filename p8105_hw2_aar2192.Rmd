@@ -222,9 +222,10 @@ The median of the excellent response value in 2002 is 23.6.
 
 ### A histogram of "Excellent" response values in year 2002.
 ```{r}
-hist(filter_2002$excellent)
+hist(filter_2002$excellent, xlab = "Excellent Response Percentage", ylab = "Percentage of Counties", main = paste("Excellent responses in 2002"))
 ```
 
+### A scatterplot for "excellent" responses in New York County and Queens County 2002 to 2010
 
 
 
