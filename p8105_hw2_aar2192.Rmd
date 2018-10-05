@@ -166,3 +166,66 @@ data("brfss_smart2010")
 
 ```
 
+#### Cleaning up BRFSS data
+
+```{r}
+brfss_smart2010_clean =
+  brfss_smart2010 %>% 
+  janitor::clean_names() %>% 
+  filter(topic == "Overall Health") %>% 
+  separate(locationdesc, into = c("remove", "county"), sep = " - ") %>% 
+  select(-class, -topic, -question, -sample_size, -remove, -confidence_limit_low:-geo_location,
+         state = locationabbr) %>% 
+  spread(key = response, value = data_value) %>% 
+  janitor::clean_names() %>%
+  mutate(Total_excellent_very_good = excellent + very_good)
+str(brfss_smart2010_clean)
+```
+  Note: There are some missing values in the column **Total_excellent_very_good** as a result of missing values in either the **excellent** and/or **very_good** columns. 
+
+### Below are some questions surrounding the BRFSS dataset:
+
+#### How many unique locations are included in the dataset?
+```{r}
+summary(unique(brfss_smart2010_clean$county))
+```
+  
+There are 351 unique locations or counties in this dataset.
+
+#### Is every state represented?
+
+```{r}
+summary(unique(brfss_smart2010_clean$state))
+```
+All 50 states are represented as well as DC.
+
+#### Which state is observed the most?
+
+```{r}
+brfss_smart2010_clean$state %>%
+  table() %>% 
+  sort() %>% 
+  names() %>% 
+  tail(.,1)
+```
+New Jersey, NJ, is observed the most.
+
+#### In 2002, what is the median of "Excellent" response value?
+
+```{r}
+filter_2002 =
+  brfss_smart2010_clean %>% 
+  filter(year == 2002)
+median(filter_2002$excellent, na.rm = TRUE)
+```
+The median of the excellent response value in 2002 is 23.6.
+
+### A histogram of "Excellent" response values in year 2002.
+```{r}
+hist(filter_2002$excellent)
+```
+
+
+
+
+
